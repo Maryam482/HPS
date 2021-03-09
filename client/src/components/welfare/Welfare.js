@@ -11,6 +11,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
+import SubTable from './SubTable';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -52,9 +53,95 @@ export default function Register({back,next, title}) {
     ModifyUser: "Admin",
 });
 const handleSubmit = () => {
- 
   next()
 }
+var newRowsArr = [];
+const [recID, setrecID] = useState('MR0000000012')
+    const [property, setProperty] = useState({
+        error: '',
+        open: false,   
+        severity: '',
+        viewList: false,
+        editList: false,
+        newList: true,
+        loadingOnSave: false,
+        dialogOpen: false,
+        locationLookup: true,
+        BatchLookup: true,
+    })
+    const [loading, setLoading] = useState(false);
+
+    const [ItemTable, SetItemTable] = useState(
+        {
+            columns: [
+                {
+                    title: 'Member Name', field: 'MemberName',
+                    cellStyle: {
+                        width: '25%'
+                    },
+                    render: (rowData) => (<input type="text" name="MemberName"/>)
+                },
+                {
+                    title: 'RelationWithPatient', field: 'RelationWithPatient',
+                    cellStyle: {
+                        width: '25%'
+                    },
+                    render: (rowData) => (<input type="text" name="RelationWithPatient"/>)
+                },
+                {
+                    title: 'Monthly Income', field: 'MonthlyIncome',
+                    cellStyle: {
+                        width: '25%'
+                    },
+                    render: (rowData) => (<input type="text" name="MonthlyIncome"/>)
+                },
+            ], rows: []
+        });
+
+    const AddRow = () => {
+        console.log(ItemTable.rows);
+        let arr = ItemTable.rows
+        let check = arr.filter((data) => {
+            return data.MemberName === "" || data.RelationWithPatient === ""
+        })
+
+        if (check.length > 0) {
+            setProperty({
+                ...property,
+                msg: "Please Completely Fill Previous row",
+                severity: 'error',
+                open: true,
+            });
+        }
+        else {
+            // setProperty({ ...property, CurrencyLookup: true })
+            console.log('faaa');
+            let Item = {
+                MRNo: recID,
+                MemberName: "",
+                RelationWithPatient: "",
+                MonthlyIncome: ""
+            }
+
+            arr.push({ ...Item })
+            newRowsArr = arr
+            SetItemTable({ ...ItemTable, rows: arr })
+            console.log(ItemTable.rows);
+        }
+    }
+    const updateTableData = (e, rowData, prop) => {
+        let arr = newRowsArr;
+        let index = arr.indexOf(rowData)
+        arr[index][prop] = e
+        SetItemTable({ ...ItemTable, rows: arr })
+        newRowsArr = arr
+    }
+    const onClickDelete = (rowData) => {
+        let arr = ItemTable.rows
+        let index = arr.indexOf(rowData)
+        arr.splice(index, 1)
+        SetItemTable({ ...ItemTable, rows: arr })
+    }
 
   return (
     <div>
@@ -245,13 +332,14 @@ const handleSubmit = () => {
                     onChange={(e) => setHeader({ ...Header, NoOFFamilyMembers: e.target.value })}
                     label="Family Members"/>
                 </Grid>
+         
               </Grid>
             </Grid> 
           </Grid>
         </Grid>
       </Grid>
+      <SubTable/>
     </div>
     </div>
   );
 }
-

@@ -128,7 +128,7 @@ export default function HorizontalLinearStepper() {
         ) : (
           <div>
             <Typography className={classes.instructions}>{getStepContent(activeStep,handleBack,handleNext)}</Typography>
-            <div>
+            {/* <div>
               <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                 Back
               </Button>
@@ -151,7 +151,7 @@ export default function HorizontalLinearStepper() {
               >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

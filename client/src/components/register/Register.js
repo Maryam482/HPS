@@ -10,6 +10,7 @@ import {
   FormControl,
   Checkbox,
   FormControlLabel,
+  Button
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Register({back,next}) {
   const classes = useStyles();
   const [options,setOptions] = useState([{val: false, opt: 'Welfare'}])
+  const[err, setErr] = useState('')
   const [Header, setHeader] = useState({
     MRNo: "",
     TokenNo: "",
@@ -66,7 +68,28 @@ export default function Register({back,next}) {
       setOptions([...options, 'zakaat', {val: true, opt: 'Zakaat'}])
     }
   }
+  const validate = () => {
+    let errors = {};
+    if (!Header.TokenNo) {
+      errors.TokenNo = 'TokenNo is required';
+    }
+    return errors;
+  };
+    // setErr('jjj')
+    // Object.keys(Header).map(function(key, index) {
+    //   console.log(Header[key])
+
+  //     if (Header.Address === "") {
+  //       console.log(err)
+  //       // return false;
+  //     }
+
+  // }
+  
   const handleSubmit = () => {
+    validate();
+    console.log(err)
+    console.log(Header);
     next()
   }
 
@@ -81,7 +104,7 @@ export default function Register({back,next}) {
             label="M.R. #"/>
         </Grid>
         <Grid item md={4} sm={12} lg={3}>
-          <TextField value={Header.TokenNo} id="TokenNo" type="text" fullWidth
+          <TextField value={Header.TokenNo || ''} id="TokenNo" type="text" fullWidth
             onChange={(e) => setHeader({ ...Header, TokenNo: e.target.value })}
             label="TokenNo"/>
         </Grid>
@@ -279,6 +302,7 @@ export default function Register({back,next}) {
             </Grid>
           </Grid>
       </Grid>
+      <Button onClick={handleSubmit} style={{color:"black", backgroundColor: "rgb(3, 78, 162)"}}>Submit</Button>
     </div>
     </div>
   );
