@@ -36,7 +36,7 @@ export default function FormDialog({open, handleClose}) {
     <div>
       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
-         <HorizontalLinearStepper/>
+         <HorizontalLinearStepper handleClose={handleClose}/>
         </AppBar>
        
       </Dialog>

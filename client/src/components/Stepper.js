@@ -39,7 +39,7 @@ function getStepContent(step,handleBack,handleNext) {
   }
 }
 
-export default function HorizontalLinearStepper() {
+export default function HorizontalLinearStepper({handleClose}) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
@@ -52,20 +52,26 @@ export default function HorizontalLinearStepper() {
   const isStepSkipped = (step) => {
     return skipped.has(step);
   };
-
   const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
+        let newSkipped = skipped;
+        if(activeStep == 2) {
+          handleClose()
+        } 
+        if (isStepSkipped(activeStep)) {
+          newSkipped = new Set(newSkipped.values());
+          newSkipped.delete(activeStep);
+        }
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
   };
 
   const handleBack = () => {
+    if(activeStep==0){
+      handleClose()
+     } else{
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+     }
   };
 
   const handleSkip = () => {
@@ -128,7 +134,7 @@ export default function HorizontalLinearStepper() {
         ) : (
           <div>
             <Typography className={classes.instructions}>{getStepContent(activeStep,handleBack,handleNext)}</Typography>
-            {/* <div>
+            <div>
               <Button disabled={activeStep === 0} onClick={handleBack} className={classes.button}>
                 Back
               </Button>
@@ -151,7 +157,7 @@ export default function HorizontalLinearStepper() {
               >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
               </Button>
-            </div> */}
+            </div>
           </div>
         )}
       </div>

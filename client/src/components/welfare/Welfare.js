@@ -277,9 +277,9 @@ const [recID, setrecID] = useState('MR0000000012')
                 </Grid>
                 <Grid item sm={12} md={12} lg={12}>
                 <FormControlLabel color="primary"
-                  control={<Checkbox checked={Header.IsMarried} name="Is Maried" fullWidth
+                  control={<Checkbox checked={Header.IsMarried} name="Is Married" fullWidth
                   onChange={e => setHeader({ ...Header, IsMarried: !Header.IsMarried })} />}
-                  label="Maried"
+                  label="Married"
                 />
                 <FormControlLabel color="primary"
                   control={<Checkbox checked={Header.HaveGold} name="HaveGold" fullWidth

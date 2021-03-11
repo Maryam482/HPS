@@ -7,7 +7,6 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import HorizontalLinearStepper from '../Stepper';
 
-
 const List = () => {
     const [open, setOpen] = React.useState(false);
 
@@ -28,8 +27,8 @@ const List = () => {
         { name: 'Abeer', surname: 'Ali', birthYear: 1995, birthCity: 63 }
     ])
     return (
-        <div style={{ maxWidth: '90%', margin : 'auto' }}>
-            {/* <FormDialog open={open} onClose={handleClose}/> */}
+        <div style={{ Width: '100% !important', margin : 'auto !important' }}>
+            <FormDialog open={open} handleClose={handleClose}/>
            
             {open==true?<HorizontalLinearStepper/>:(
             <MaterialTable
