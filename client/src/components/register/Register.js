@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import ArrowHeader from '../Arrowheader'
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -12,6 +12,8 @@ import {
   FormControlLabel,
   Button
 } from '@material-ui/core';
+import Popup from '../Popup';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -23,9 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Register({back,next}) {
+export default function Register({back,next,id}) {
   const classes = useStyles();
   const [options,setOptions] = useState([{val: false, opt: 'Welfare'}])
+  const [ open, setOpen] = useState(false)
   const[err, setErr] = useState('')
   const [Header, setHeader] = useState({
     MRNo: "",
@@ -61,40 +64,134 @@ export default function Register({back,next}) {
     CreateDate: "",
     ModifyDate: ""
 });
+const handleOption = (val) => {
+  if (val == 'islam') {
+    setOptions([
+      {val: true, opt: 'Zakaat'},      
+      {val: false, opt: 'Welfare'}
+  ])
+  } else {
+    setOptions([ 
+    {val: false, opt: 'Welfare'}
+  ])
 
-  const handleOption = (val) => {
-    console.log(val)
-    if (val == 'islam') {
-      setOptions([...options, 'zakaat', {val: true, opt: 'Zakaat'}])
-    }
   }
-  const validate = () => {
-    let errors = {};
-    if (!Header.TokenNo) {
-      errors.TokenNo = 'TokenNo is required';
-    }
-    return errors;
-  };
-    // setErr('jjj')
-    // Object.keys(Header).map(function(key, index) {
-    //   console.log(Header[key])
+}
 
-  //     if (Header.Address === "") {
-  //       console.log(err)
-  //       // return false;
-  //     }
-
-  // }
-  
-  const handleSubmit = () => {
-    validate();
-    console.log(err)
-    console.log(Header);
-    next()
+const validate = () => {
+  if (Header.TokenNo === '' || Header.TokenNo === undefined || Header.TokenNo === null) {
+    setErr('Token is missing')
+    setOpen(true)
+    return false;
   }
+  else if (Header.RegistrationDate === '' || Header.RegistrationDate === undefined || Header.RegistrationDate === null) {
+    setErr('RegistrationDate is missing')
+    return false;
+  }
+  else if (Header.Name === '' || Header.Name === undefined || Header.Name === null) {
+    setErr('Name is missing')
+    return false;
+  }
+  else if (Header.FatherOrHusband === '' || Header.FatherOrHusband === undefined || Header.FatherOrHusband === null) {
+    setErr('FatherOrHusband is missing')
+    return false;
+  }
+  else if (Header.DOB === '' || Header.DOB === undefined || Header.DOB === null) {
+    setErr('Date of Birth is missing')
+    return false;
+  }
+  else if (Header.Age === '' || Header.Age === undefined || Header.Age === null) {
+    setErr('Age is missing')
+    return false;
+  }
+  else if (Header.Gender === '' || Header.Gender === undefined || Header.Gender === null) {
+    setErr('Gender is missing')
+    return false;
+  }
+  else if (Header.Religion === '' || Header.Religion === undefined || Header.Religion === null) {
+    setErr('Religion is missing')
+    return false;
+  }
+  else if (Header.IsZakat === '' || Header.IsZakat === undefined || Header.IsZakat === null) {
+    setErr('Zakaat is missing')
+    return false;
+  }
+  else if (Header.CNIC === '' || Header.CNIC === undefined || Header.CNIC === null) {
+    setErr('CNIC is missing')
+    return false;
+  }
+
+  else if (Header.HousNo === '' || Header.HousNo === undefined || Header.HousNo === null) {
+    setErr('House No is missing')
+    return false;
+  }
+  else if (Header.Address === '' || Header.Address === undefined || Header.Address === null) {
+    setErr('Address is missing')
+    return false;
+  }
+  else if (Header.Area === '' || Header.Area === undefined || Header.Area === null) {
+    setErr('Area is missing')
+    return false;
+  }
+  else if (Header.City === '' || Header.City === undefined || Header.City === null) {
+    setErr('Ciy is missing')
+    return false;
+  }
+
+  else if (Header.Mobile === '' || Header.Mobile === undefined || Header.Mobile === null) {
+    setErr('Mobile is missing')
+    return false;
+  }
+  else if (Header.EmpID === '' || Header.EmpID === undefined || Header.EmpID === null) {
+    setErr('Employee ID is missing')
+    return false;
+  }
+  else if (Header.NOY === '' || Header.Name === undefined || Header.Name === null) {
+    setErr('NOY is missing')
+    return false;
+  }
+  else if (Header.IsPAFEmp === '' || Header.IsPAFEmp === undefined || Header.IsPAFEmp === null) {
+    setErr('PAF Employee is missing')
+    return false;
+  }
+
+  else if (Header.IsRejected === '' || Header.IsRejected === undefined || Header.IsRejected === null) {
+    setErr('Rejection is missing')
+    return false;
+  }
+
+  else {
+    return true;
+  }
+}
+
+
+ const handleSubmit = () => {
+  const val=validate();
+  console.log(Header);
+  if ( val === true ) {
+    console.log("IN")
+    axios.post('http://localhost:4000/api/register/add', Header)
+    .then(res => next())
+    .catch(err => console.log(err, 'err'))
+  } else {
+    setOpen(true)
+  }
+}
+
+useEffect(() => {
+  console.log(id)
+
+  axios.get(`http://localhost:4000/api/register/${id}`)
+  .then( res => {
+    console.log(res)
+    // setHeader()
+  })
+}, [])
 
   return (
     <div>
+        <Popup msg={err} open={open} handleClose={() => setOpen(false)}/>
     <ArrowHeader next={handleSubmit} back={back} title="Registration"/>
     <div style={{ padding: 16, margin: 'auto', maxWidth: '80%', justifyContent:'center' }}>
       <Grid container spacing={2}>

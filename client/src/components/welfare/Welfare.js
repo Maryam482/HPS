@@ -12,7 +12,8 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import SubTable from './SubTable';
-
+import axios from 'axios'
+import Popup from '../Popup';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -23,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Register({back,next, title}) {
+export default function Register({back,next, title,id}) {
   const classes = useStyles();
+  const [ open, setOpen] = useState(false)
+  const[err, setErr] = useState('')
   const [Header, setHeader] = useState({
     MRNo: 'recID',
     TokenNo: "",
@@ -52,99 +55,199 @@ export default function Register({back,next, title}) {
     CreateUser: "Admin",
     ModifyUser: "Admin",
 });
-const handleSubmit = () => {
-  next()
+// const handleSubmit = () => {
+//   next()
+// }
+const validate = () => {
+  if (Header.WelfareDate === '' || Header.WelfareDate === undefined || Header.WelfareDate === null) {
+    setErr('WelfareDate is missing')
+    setOpen(true)
+    return false;
+  }
+  else if (Header.Profession === '' || Header.Profession === undefined || Header.Profession === null) {
+    setErr('Profession is missing')
+    return false;
+  }
+  else if (Header.Fiqa === '' || Header.Fiqa === undefined || Header.Fiqa === null) {
+    setErr('Fiqa is missing')
+    return false;
+  }
+  else if (Header.Education === '' || Header.Education === undefined || Header.Education === null) {
+    setErr('Education is missing')
+    return false;
+  }
+  else if (Header.Cast === '' || Header.Cast === undefined || Header.Cast === null) {
+    setErr('Cast is missing')
+    return false;
+  }
+  else if (Header.MonthlyIncome === '' || Header.MonthlyIncome === undefined || Header.MonthlyIncome === null) {
+    setErr('MonthlyIncome is missing')
+    return false;
+  }
+  else if (Header.Guardian === '' || Header.Guardian === undefined || Header.Guardian === null) {
+    setErr('Guardian is missing')
+    return false;
+  }
+  else if (Header.OtherInfo === '' || Header.OtherInfo === undefined || Header.OtherInfo === null) {
+    setErr('OtherInfo is missing')
+    return false;
+  }
+  else if (Header.MaleKids === '' || Header.MaleKids === undefined || Header.MaleKids === null) {
+    setErr('MaleKids is missing')
+    return false;
+  }
+  else if (Header.FemaleKids === '' || Header.FemaleKids === undefined || Header.FemaleKids === null) {
+    setErr('FemaleKids is missing')
+    return false;
+  }
+  else if (Header.OtherKids === '' || Header.OtherKids === undefined || Header.OtherKids === null) {
+    setErr('OtherKids is missing')
+    return false;
+  }
+  else if (Header.Brothers === '' || Header.Brothers === undefined || Header.Brothers === null) {
+    setErr('Brothers is missing')
+    return false;
+  }
+  else if (Header.NoOFFamilyMembers === '' || Header.NoOFFamilyMembers === undefined || Header.NoOFFamilyMembers === null) {
+    setErr('NoOFFamilyMembers is missing')
+    return false;
+  }
+  else if (Header.IsMarried === '' || Header.IsMarried === undefined || Header.IsMarried === null) {
+    setErr('IsMarried is missing')
+    return false;
+  }
+  else if (Header.IsAbleToPay === '' || Header.IsAbleToPay === undefined || Header.IsAbleToPay === null) {
+    setErr('IsAbleToPay is missing')
+    return false;
+  }
+  else if (Header.IsEarning === '' || Header.IsEarning === undefined || Header.IsEarning === null) {
+    setErr('IsEarning is missing')
+    return false;
+  }
+  else if (Header.HaveGold === '' || Header.HaveGold === undefined || Header.HaveGold === null) {
+    setErr('HaveGold is missing')
+    return false;
+  }
+  else if (Header.ReqName === '' || Header.ReqName === undefined || Header.ReqName === null) {
+    setErr('ReqName is missing')
+    return false;
+  }
+  else if (Header.ReqPhone === '' || Header.ReqPhone === undefined || Header.ReqPhone === null) {
+    setErr('ReqPhone is missing')
+    return false;
+  }
+  else if (Header.ReqRelationWithPatient === '' || Header.ReqRelationWithPatient === undefined || Header.ReqRelationWithPatient === null) {
+    setErr('ReqRelationWithPatient is missing')
+    return false;
+  }
+  else {
+    return true;
+  }
 }
-var newRowsArr = [];
-const [recID, setrecID] = useState('MR0000000012')
-    const [property, setProperty] = useState({
-        error: '',
-        open: false,   
-        severity: '',
-        viewList: false,
-        editList: false,
-        newList: true,
-        loadingOnSave: false,
-        dialogOpen: false,
-        locationLookup: true,
-        BatchLookup: true,
-    })
-    const [loading, setLoading] = useState(false);
 
-    const [ItemTable, SetItemTable] = useState(
-        {
-            columns: [
-                {
-                    title: 'Member Name', field: 'MemberName',
-                    cellStyle: {
-                        width: '25%'
-                    },
-                    render: (rowData) => (<input type="text" name="MemberName"/>)
-                },
-                {
-                    title: 'RelationWithPatient', field: 'RelationWithPatient',
-                    cellStyle: {
-                        width: '25%'
-                    },
-                    render: (rowData) => (<input type="text" name="RelationWithPatient"/>)
-                },
-                {
-                    title: 'Monthly Income', field: 'MonthlyIncome',
-                    cellStyle: {
-                        width: '25%'
-                    },
-                    render: (rowData) => (<input type="text" name="MonthlyIncome"/>)
-                },
-            ], rows: []
-        });
+const handleSubmit = () => {
+  const val=validate();
+  console.log(Header);
+  if ( val === true ) {
+    console.log("IN")
+    axios.post('http://localhost:4000/api/welfare/add', Header)
+    .then(res => next())
+    .catch(err => console.log(err, 'err'))
+  } else {
+    setOpen(true)
+  }
+}
+// var newRowsArr = [];
+// const [recID, setrecID] = useState('MR0000000012')
+//     const [property, setProperty] = useState({
+//         error: '',
+//         open: false,   
+//         severity: '',
+//         viewList: false,
+//         editList: false,
+//         newList: true,
+//         loadingOnSave: false,
+//         dialogOpen: false,
+//         locationLookup: true,
+//         BatchLookup: true,
+//     })
+    // const [loading, setLoading] = useState(false);
 
-    const AddRow = () => {
-        console.log(ItemTable.rows);
-        let arr = ItemTable.rows
-        let check = arr.filter((data) => {
-            return data.MemberName === "" || data.RelationWithPatient === ""
-        })
+    // const [ItemTable, SetItemTable] = useState(
+    //     {
+    //         columns: [
+    //             {
+    //                 title: 'Member Name', field: 'MemberName',
+    //                 cellStyle: {
+    //                     width: '25%'
+    //                 },
+    //                 render: (rowData) => (<input type="text" name="MemberName"/>)
+    //             },
+    //             {
+    //                 title: 'RelationWithPatient', field: 'RelationWithPatient',
+    //                 cellStyle: {
+    //                     width: '25%'
+    //                 },
+    //                 render: (rowData) => (<input type="text" name="RelationWithPatient"/>)
+    //             },
+    //             {
+    //                 title: 'Monthly Income', field: 'MonthlyIncome',
+    //                 cellStyle: {
+    //                     width: '25%'
+    //                 },
+    //                 render: (rowData) => (<input type="text" name="MonthlyIncome"/>)
+    //             },
+    //         ], rows: []
+    //     });
 
-        if (check.length > 0) {
-            setProperty({
-                ...property,
-                msg: "Please Completely Fill Previous row",
-                severity: 'error',
-                open: true,
-            });
-        }
-        else {
-            // setProperty({ ...property, CurrencyLookup: true })
-            console.log('faaa');
-            let Item = {
-                MRNo: recID,
-                MemberName: "",
-                RelationWithPatient: "",
-                MonthlyIncome: ""
-            }
+    // const AddRow = () => {
+    //     console.log(ItemTable.rows);
+    //     let arr = ItemTable.rows
+    //     let check = arr.filter((data) => {
+    //         return data.MemberName === "" || data.RelationWithPatient === ""
+    //     })
 
-            arr.push({ ...Item })
-            newRowsArr = arr
-            SetItemTable({ ...ItemTable, rows: arr })
-            console.log(ItemTable.rows);
-        }
-    }
-    const updateTableData = (e, rowData, prop) => {
-        let arr = newRowsArr;
-        let index = arr.indexOf(rowData)
-        arr[index][prop] = e
-        SetItemTable({ ...ItemTable, rows: arr })
-        newRowsArr = arr
-    }
-    const onClickDelete = (rowData) => {
-        let arr = ItemTable.rows
-        let index = arr.indexOf(rowData)
-        arr.splice(index, 1)
-        SetItemTable({ ...ItemTable, rows: arr })
-    }
+    //     if (check.length > 0) {
+    //         setProperty({
+    //             ...property,
+    //             msg: "Please Completely Fill Previous row",
+    //             severity: 'error',
+    //             open: true,
+    //         });
+    //     }
+    //     else {
+    //         // setProperty({ ...property, CurrencyLookup: true })
+    //         console.log('faaa');
+    //         let Item = {
+    //             MRNo: recID,
+    //             MemberName: "",
+    //             RelationWithPatient: "",
+    //             MonthlyIncome: ""
+    //         }
+
+    //         arr.push({ ...Item })
+    //         newRowsArr = arr
+    //         SetItemTable({ ...ItemTable, rows: arr })
+    //         console.log(ItemTable.rows);
+    //     }
+    // }
+    // const updateTableData = (e, rowData, prop) => {
+    //     let arr = newRowsArr;
+    //     let index = arr.indexOf(rowData)
+    //     arr[index][prop] = e
+    //     SetItemTable({ ...ItemTable, rows: arr })
+    //     newRowsArr = arr
+    // }
+    // const onClickDelete = (rowData) => {
+    //     let arr = ItemTable.rows
+    //     let index = arr.indexOf(rowData)
+    //     arr.splice(index, 1)
+    //     SetItemTable({ ...ItemTable, rows: arr })
+    // }
 
   return (
     <div>
+      <Popup msg={err} open={open} handleClose={() => setOpen(false)}/>
       <ArrowHeader next={handleSubmit} back={back} title="Welfare" />
     <div style={{ padding: 16, margin: 'auto', maxWidth: '80%', justifyContent:'center' }}>
       <Grid container spacing={2}>

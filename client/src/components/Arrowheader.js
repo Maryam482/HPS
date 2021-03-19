@@ -17,10 +17,7 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
- 
-
 }));
-
 export default function ArrowHeader({back, next, title}) {
   const classes = useStyles();
 

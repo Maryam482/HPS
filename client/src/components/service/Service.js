@@ -11,7 +11,8 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
-
+import axios from 'axios';
+import Popup from '../Popup';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -22,8 +23,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Register({back, next, title}) {
+export default function Register({back, next, title,id}) {
   const classes = useStyles();
+  const [ open, setOpen] = useState(false)
+  const[err, setErr] = useState('')
   const [Header, setHeader] = useState({
     TokenNo: "",
     ServiceDate: new Date(),
@@ -36,12 +39,58 @@ export default function Register({back, next, title}) {
     CreatedUser: "Admin",
     ModifyUser: "Admin"
 });
-const handleSubmit = () => {
-  console.log(Header)
-  next()
+
+const validate = () => {
+  if (Header.ServiceDate === '' || Header.ServiceDate === undefined || Header.ServiceDate === null) {
+    setErr('ServiceDate is missing')
+    setOpen(true)
+    return false;
+  }
+  else if (Header.Ward === '' || Header.Ward === undefined || Header.Ward === null) {
+    setErr('Ward is missing')
+    return false;
+  }
+  else if (Header.Amount === '' || Header.Amount === undefined || Header.Amount === null) {
+    setErr('Amount is missing')
+    return false;
+  }
+  else if (Header.TotalAmount === '' || Header.TotalAmount === undefined || Header.TotalAmount === null) {
+    setErr('TotalAmount is missing')
+    return false;
+  }
+  else if (Header.PatientContribution === '' || Header.PatientContribution === undefined || Header.PatientContribution === null) {
+    setErr('PatientContribution is missing')
+    return false;
+  }
+  else if (Header.Remarks === '' || Header.Remarks === undefined || Header.Remarks === null) {
+    setErr('Remarks is missing')
+    return false;
+  }
+  else {
+    return true;
+  }
 }
+
+
+const handleSubmit = () => {
+  const val=validate();
+  console.log(Header);
+  if ( val === true ) {
+    console.log("IN")
+    axios.post('http://localhost:4000/api/service/add', Header)
+    .then(res => console.log(res))
+    .catch(err => console.log(err, 'err'))
+  } else {
+    setOpen(true)
+  }
+}
+// const handleSubmit = () => {
+//   console.log(Header)
+//   next()
+// }
   return (
     <div>
+        <Popup msg={err} open={open} handleClose={() => setOpen(false)}/>
     <ArrowHeader next={handleSubmit} back={back} title="Services"  />
     <div style={{ padding: 16, margin: 'auto', maxWidth: '80%', justifyContent:'center' }}>
       
